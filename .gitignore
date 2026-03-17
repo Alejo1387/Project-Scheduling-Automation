@@ -3,3 +3,6 @@ __pycache__/
 
 # ignore .env
 .env
+
+# Ignore credentials
+client_secret.json
