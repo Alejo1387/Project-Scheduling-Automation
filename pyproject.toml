@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "scheduler-project"
+version = "0.1.0"
+description = "Google Calendar scheduling challenge"
+authors = ["Alejo1387 <trabajoalgoritmos02@gmail.com>"]
+license = "MIT"
+packages = [
+    { include = "app" },
+    { include = "cli" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = ">=0.135.1,<0.136.0"
+uvicorn = ">=0.42.0,<0.43.0"
+typer = ">=0.24.1,<0.25.0"
+requests = ">=2.32.5,<3.0.0"
+google-api-python-client = ">=2.192.0,<3.0.0"
+google-auth-oauthlib = ">=1.3.0,<2.0.0"
+python-dotenv = ">=1.2.2,<2.0.0"
+pytz = "^2026.1.post1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=9.0.2,<10.0.0"
+
+[tool.poetry.scripts]
+scheduler = "cli.cli:app"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
