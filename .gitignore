@@ -6,3 +6,6 @@ __pycache__/
 
 # Ignore credentials
 client_secret.json
+
+# Ignore token
+token.pickle
