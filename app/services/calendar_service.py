@@ -74,3 +74,65 @@ def list_events():
     normalized_events = [normalize_event(e) for e in google_events]
 
     return normalized_events
+
+def create_event(start: datetime, end: datetime, title: str):
+    """
+    Crea un evento en Google Calendar.
+    
+    Args:
+        start: Fecha/hora de inicio en zona horaria de Colombia
+        end: Fecha/hora de finalización en zona horaria de Colombia
+        title: Título del evento
+        
+    Returns:
+        El evento creado con su ID
+        
+    Raises:
+        ValueError: Si las fechas son inválidas
+        Exception: Si hay error al conectar con Google Calendar
+    """
+    try:
+        # Validar que start sea antes que end
+        if start >= end:
+            raise ValueError("La fecha de inicio debe ser anterior a la fecha de finalización")
+        
+        # Si las fechas no tienen zona horaria, asignar la de Colombia
+        if start.tzinfo is None:
+            start = start.replace(tzinfo=USER_TIMEZONE)
+        
+        if end.tzinfo is None:
+            end = end.replace(tzinfo=USER_TIMEZONE)
+        
+        # Convertir a UTC para enviar a Google Calendar
+        start_utc = start.astimezone(timezone.utc)
+        end_utc = end.astimezone(timezone.utc)
+        
+        service = get_calendar_service()
+
+        event = {
+            "summary": title,
+            "start": {
+                "dateTime": start_utc.isoformat(),
+                "timeZone": "America/Bogota",
+            },
+            "end": {
+                "dateTime": end_utc.isoformat(),
+                "timeZone": "America/Bogota",
+            },
+        }
+
+        created_event = service.events().insert(
+            calendarId="primary",
+            body=event
+        ).execute()
+        
+        # Validar que el evento se creó correctamente
+        if not created_event.get("id"):
+            raise Exception("El evento no se creó correctamente en Google Calendar")
+
+        return created_event
+        
+    except ValueError as ve:
+        raise ValueError(f"Error de validación: {str(ve)}")
+    except Exception as e:
+        raise Exception(f"Error al crear el evento en Google Calendar: {str(e)}")
